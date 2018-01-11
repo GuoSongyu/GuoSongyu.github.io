@@ -1,0 +1,27 @@
+---
+layout: post
+title: "主题介绍"
+date: 2017-01-20 15:16:30 +0800
+tags: jekyll
+description: 简单的对Jekyll-Clean-Dark主题进行介绍
+---
+
+Jekyll-Clean-Dark主题介绍：
+
+* 如果你喜欢这个主题，可以在[这里](https://github.com/streetturtle/jekyll-clean-dark)来获取它
+* 你可以浏览[在线实例](http://pavelmakhov.com/jekyll-clean-dark)
+
+这个主题是Scotte基于[Jekyll Clean theme](https://scotte.github.io)创建的。
+
+这个主题使用了Twitter Bootstrap的一些部分，使它可以在移动端设备上看起来同样非常不错，通过可折叠导航栏和隐藏侧边栏
+
+
+下面是一些在移动设备的展示：
+
+![My helpful screenshot]({{ site.baseurl | prepend:site.url}}/images/iphone_portrait.PNG){: .center-image }*iPhone 5 竖屏*
+
+![My helpful screenshot]({{ site.baseurl | prepend:site.url}}/images/iphone_landscape.PNG){: .center-image }*iPhone 5 横屏*
+
+![My helpful screenshot]({{ site.baseurl | prepend:site.url}}/images/ipad_portrait.PNG){: .center-image }*iPad mini 竖屏*
+
+![My helpful screenshot]({{ site.baseurl | prepend:site.url}}/images/ipad_landscape.PNG){: .center-image }*iPad mini 横屏*

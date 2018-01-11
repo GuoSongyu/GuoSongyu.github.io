@@ -1,0 +1,43 @@
+---
+layout: post
+title:  "php获取目录下的所有文件及其内容"
+date:   2017-08-03 23:12:40 +0800
+tags: php
+description: 通过opendir()获取文件目录，再通过readdir()来依次获取目录中的每一个文件
+---
+
+在阅读一个tp5的cms系统中的时候，发现在生成多模板选择列表的时候，用了一个非常好的想法（我觉得我是想不到），在每个主题中都存在一个info.php的文件和一个对应主题的logo
+
+这样在查询列表显示的时候，直接用php去获取视图的目录，然后再依次获取目录中每一个文件中的info.php和logo文件，生成一个新的数组渲染到前段页面中显示，这之中用到的的主要函数就是opendir() 、 readdir() 和 include 这三个函数
+
+
+## [](#header-2)[opendir()][php-opendir]
+
+根据路径获取文件目录，如果存在则返回目录的资源句柄，类似 resource(55,stream)这种
+
+
+## [](#header-2)[readdir()][php-readdir]
+
+返回目录中下一个文件的文件名。文件名以在文件系统中的排序返回，_但是_ 在使用的过程发现，除了会返回目录中可以看到的文件之外，在前面还会有两个多余的"."和".."，查找了一些资料发现这两个是系统赋予每个目录的，每个目录被创建之后都会存在，所以在使用的时候要将这两个从结果中去掉
+
+{% highlight php %}
+<?php
+$dir = "/images/";
+
+// 打开目录，然后读取其内容
+if (is_dir($dir)){
+  if ($dh = opendir($dir)){
+    while (false !== ($file = readdir($handle))) {
+        if ($file != "." && $file != "..") {
+            echo "filename:".$file."<br/>";
+        }
+    }
+    closedir($dh);
+  }
+}
+
+?>
+{% endhighlight %}
+
+[php-opendir]:http://php.net/manual/zh/function.opendir.php
+[php-readdir]:http://php.net/manual/zh/function.readdir.php

@@ -1,0 +1,39 @@
+---
+layout: post
+title:  "PHP获取当月月份范围内的时间戳"
+date:   2017-06-26 23:22:05 +0800
+tags: php
+description: 信息的时间储存格式为时间戳，且需要查询当月信息时，获取当月前后的时间戳范围
+---
+
+要通过时间戳来查询到当月内的数据时，其实就是获取当月月初的时间戳和下个月月初的时间戳，想明白之后代码就没什么了
+
+{% highlight php %}
+<?php
+/**
+* 获取当月范围的信息，只需要查询出本月初和下个月月初两个时间戳即可
+*/
+$year = date('Y',time());
+$month = date('m',time());
+$ym = date('Y-m',time());
+
+//获取本月月初的时间戳
+$monthStr1 = $ym.'-01';
+$startTime = strtotime($monthStr1);
+
+//获取下个月月初时间戳
+if($month >= 12){
+  //本月月份为12月时，下个月月初即为明年年初
+  $monthStr2 = ($year+1).'-01-01';
+  $endTime = strtotime($monthStr2);
+}else{
+  //本月月份不为12月时，正常计算
+  $monthStr2 = $year.'-'.($month+1).'-01';
+  $endTime = strtotime($monthStr2);
+}
+echo "本月月初的时间戳为：".$startTime;echo "<br/>";
+echo "下月月初的时间戳为：".$endTime;
+?>
+{% endhighlight %}
+
+然后把获取到的时间戳加入到查询条件中就可以了

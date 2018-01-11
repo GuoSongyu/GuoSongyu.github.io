@@ -1,0 +1,123 @@
+---
+layout: post
+title:  "base64上传图片并解决iphone端图片方向不正确的问题"
+date:   2017-02-03 14:36:08 +0800
+tags: web
+description: base64上传图片并通过exif.js进行矫正
+---
+
+最近一直在做手机端的网站，涉及到上传、压缩图片，我使用的是base64（大神不要嘲笑），在安卓端的时候还没有发现问题，但是一换到IOS端，就出现问题了（再吐槽一下，万恶的IOS），后来查找了一些资料，发现IOS在储存照片的时候会根据拍照的方向来储存，base64压缩的时候要先矫正方向才可以成功的上传和压缩
+
+检测图片的方向要用的到 exif.js ，[猛戳这里下载][exif.js],这个插件可以获取到图片的原信息，同时获取图片的方向，下面开始上代码（不要问我代码是谁( ⊙ o ⊙ )）：
+
+{% highlight js %}
+<script type="text/javascript">
+	window.onload = function(){
+        var input = document.getElementById("file_input");
+        var result,div;
+ 
+        if(typeof FileReader==='undefined'){
+            result.innerHTML = "抱歉，你的浏览器不支持 FileReader";
+            input.setAttribute('disabled','disabled');
+        }else{
+            input.addEventListener('change',readFile,false);
+        }
+        function readFile(){   
+                var file = this.files[0]; 
+                var orientation;
+              //EXIF js 可以读取图片的元信息 https://github.com/exif-js/exif-js
+              EXIF.getData(file,function(){
+                orientation=EXIF.getTag(this,'Orientation');
+              });     
+                //判断类型是不是图片  
+                if(!/image\/\w+/.test(file.type)){     
+                        alertmsg('请上传图片');  
+                        return false;   
+                }   
+                var reader = new FileReader();   
+                reader.readAsDataURL(file);   
+                reader.onload = function(e){
+                    getImgData(this.result,orientation,function(data){
+                        result = '<div class="PicInput fl" id="PicInput"><img class="pic" src="'+data+'"><span class="DelInput"></span></div>';
+                        div = document.createElement('div');
+                        div.innerHTML = result;
+                        document.getElementById('PicUpload').appendChild(div);
+                        return false;
+                    }); 
+                }
+        return false;   
+        }
+    return false;   
+    }
+
+    // @param {string} img 图片的base64
+    // @param {int} dir exif获取的方向信息
+    // @param {function} next 回调方法，返回校正方向后的base64
+    function getImgData(img,dir,next){
+     var image=new Image();
+     image.onload=function(){
+      var degree=0,drawWidth,drawHeight,width,height;
+      drawWidth=this.naturalWidth;
+      drawHeight=this.naturalHeight;
+      //以下改变一下图片大小
+      var maxSide = Math.max(drawWidth, drawHeight);
+      if (maxSide > 1024) {
+        var minSide = Math.min(drawWidth, drawHeight);
+        minSide = minSide / maxSide * 1024;
+        maxSide = 1024;
+        if (drawWidth > drawHeight) {
+          drawWidth = maxSide;
+          drawHeight = minSide;
+        } else {
+          drawWidth = minSide;
+          drawHeight = maxSide;
+        }
+      }
+      var canvas=document.createElement('canvas');
+      canvas.width=width=drawWidth;
+      canvas.height=height=drawHeight; 
+      var context=canvas.getContext('2d');
+      //判断图片方向，重置canvas大小，确定旋转角度，iphone默认的是home键在右方的横屏拍摄方式
+      switch(dir){
+        //iphone横屏拍摄，此时home键在左侧
+        case 3:
+          degree=180;
+          drawWidth=-width;
+          drawHeight=-height;
+          break;
+        //iphone竖屏拍摄，此时home键在下方(正常拿手机的方向)
+        case 6:
+          canvas.width=height;
+          canvas.height=width; 
+          degree=90;
+          drawWidth=width;
+          drawHeight=-height;
+          break;
+        //iphone竖屏拍摄，此时home键在上方
+        case 8:
+          canvas.width=height;
+          canvas.height=width; 
+          degree=270;
+          drawWidth=-width;
+          drawHeight=height;
+          break;
+      }
+      //使用canvas旋转校正
+      context.rotate(degree*Math.PI/180);
+      context.drawImage(this,0,0,drawWidth,drawHeight);
+      //返回校正图片
+      next(canvas.toDataURL("image/jpeg",.6));
+     }
+     image.src=img;
+    }
+</script>
+{% endhighlight %}
+
+主要的代码就是这些，主要是运用exif.js获取图片的真实方向，然后画布来矫正方向，最后显示并压缩在页面中
+
+代码完整实例在[这里][ImgDemo]
+
+
+
+[exif.js]:https://github.com/exif-js/exif-js
+[ImgDemo]:https://github.com/GuoSongyu/Dome/tree/master/imgbase64

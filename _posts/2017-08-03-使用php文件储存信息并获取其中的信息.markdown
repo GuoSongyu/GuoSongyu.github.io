@@ -1,0 +1,36 @@
+---
+layout: post
+title:  "使用php文件储存信息并获取其中的信息"
+date:   2017-08-03 22:59:45 +0800
+tags: php
+description: 通过固定的php文件储存信息，方便在其他位置调用
+---
+
+虽然用了很久的框架，但是一直不太清楚框架中的配置文件具体是如何在其他位置实现获取其中信息的，正好最近在阅读一个CMS系统时看到了这种写法（大佬们不要嘲笑，毕竟。。我还是个孩子）
+
+代码其实很简单，直接上：
+
+先创建一个data.php文件用于储存信息
+{% highlight php %}
+<?php
+return array(
+    "name" => "暮语",
+    "age"  => "26",
+    "Hobbies"  => "the beautiful girl"
+  );
+?>
+{% endhighlight %}
+
+在另一个文件中调用，用的是 include 函数，（讲真，我以前只是知道include可以引用文件，想想也是，引用的文件中如果只含有数组或者其他信息的话，不就是直接返回内容了吗）
+
+{% highlight php %}
+<?php
+  $data = include("data.php");
+  echo "name = ".$data['name'];echo "<br/>";
+  echo "age = ".$data['age'];echo "<br/>";
+  echo "Hobbies = ".$data['Hobbies'];echo "<br/>";
+?>
+{% endhighlight %}
+
+
+PS：多看看一些其他人的代码还是会学到很多东西的，加油 O(∩_∩)O
