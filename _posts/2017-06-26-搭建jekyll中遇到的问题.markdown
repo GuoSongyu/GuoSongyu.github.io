@@ -28,3 +28,20 @@ Results logged to /var/lib/gems/2.3.0/extensions/x86_64-linux/2.3.0/ffi-1.9.18/g
 
 运行 $ sudo install apt-get install ruby-dev 来安装ruby-dev
 之后再运行jekyll的安装命令就可以了～！
+
+
+2、Windows系统中安装完Ruby和DevKit之后，运行
+
+{% highlight dos %}
+gem install jekyll
+{% endhighlight dos %}
+
+之后，命令行中出现如下错误：
+
+![](/images/2018-06-18-1.png)
+
+开始我也不知道是为什么，Ruby和DevKit都是正确安装和初始化的，后来才发现是Ruby和DevKit的版本没有对应，去[官网][ruby]下载对应版本的Ruby和DevKit重新安装之后就可以解决问题
+
+
+[stackoverflow]:https://stackoverflow.com/
+[ruby]:http://rubyinstaller.org/
