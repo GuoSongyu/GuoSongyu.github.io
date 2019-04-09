@@ -25,6 +25,8 @@ social:
 
 # cnzz Web流量统计
 cnzz_key: true
+# 996icu网站徽章
+996_icu: true
 # Yandex metrica (https://metrica.yandex.com/) leave blank to ignore or put true to use
 #yandex_metrica:
 #标签页面标题设置
