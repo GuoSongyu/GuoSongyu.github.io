@@ -2,7 +2,7 @@
 layout: post
 title: "yii2demo分析之Model类一（公共目录下的Model）"
 date: 2019-04-13 16:44:12 +0800
-tags: 
+tags: yii2
 description: 
 ---
 
