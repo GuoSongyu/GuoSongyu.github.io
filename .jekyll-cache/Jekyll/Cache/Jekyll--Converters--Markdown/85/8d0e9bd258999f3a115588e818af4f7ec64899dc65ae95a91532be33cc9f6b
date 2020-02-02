@@ -1,0 +1,60 @@
+I"�<p>最近做得一个小活动中，需要对访问者的IP来进行限制，已达到一些营销目的，本来我是想通过TP中的IpLocation类结合IP库来进行判断，但是在找IP库的时候，找了好久没有找到，却无意中发现了淘宝的查询ip归属地的一个接口，非常简单，用法如下：</p>
+
+<figure class="highlight"><pre><code class="language-php" data-lang="php"><span class="nv">$clientIP</span> <span class="o">=</span> <span class="nx">getIPaddress</span><span class="p">();</span><span class="c1">//获取客户端的IP地址</span>
+<span class="nv">$taobaoIP</span> <span class="o">=</span> <span class="s1">'http://ip.taobao.com/service/getIpInfo.php?ip='</span><span class="o">.</span><span class="nv">$clientIP</span><span class="p">;</span><span class="c1">//把IP地址赋给淘宝的接口</span>
+<span class="nv">$IPinfo</span> <span class="o">=</span> <span class="p">(</span><span class="k">array</span><span class="p">)</span><span class="nb">json_decode</span><span class="p">(</span><span class="nb">file_get_contents</span><span class="p">(</span><span class="nv">$taobaoIP</span><span class="p">));</span><span class="c1">//接收返回信息</span></code></pre></figure>
+
+<p>如果成功的话会返回如下格式：</p>
+
+<figure class="highlight"><pre><code class="language-php" data-lang="php"><span class="nx">Array</span>
+<span class="p">(</span>
+    <span class="p">[</span><span class="nx">code</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">0</span>
+    <span class="p">[</span><span class="nx">data</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="k">stdClass</span> <span class="nx">Object</span>
+        <span class="p">(</span>
+            <span class="p">[</span><span class="nx">country</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="nx">中国</span>
+            <span class="p">[</span><span class="nx">country_id</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="nx">CN</span>
+            <span class="p">[</span><span class="nx">area</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="nx">东北</span>
+            <span class="p">[</span><span class="nx">area_id</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">200000</span>
+            <span class="p">[</span><span class="nx">region</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="nx">辽宁省</span>
+            <span class="p">[</span><span class="nx">region_id</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">210000</span>
+            <span class="p">[</span><span class="nx">city</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="nx">沈阳市</span>
+            <span class="p">[</span><span class="nx">city_id</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">210100</span>
+            <span class="p">[</span><span class="nx">county</span><span class="p">]</span> <span class="o">=&gt;</span> 
+            <span class="p">[</span><span class="nx">county_id</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="o">-</span><span class="mi">1</span>
+            <span class="p">[</span><span class="nx">isp</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="nx">联通</span>
+            <span class="p">[</span><span class="nx">isp_id</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mi">100026</span>
+            <span class="p">[</span><span class="nx">ip</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="mf">175.168</span><span class="o">.</span><span class="mf">27.80</span>
+        <span class="p">)</span>
+
+<span class="p">)</span></code></pre></figure>
+
+<p>可以看到很多的信息，根据想限制的地区来对字段进行判断就可以达到限制IP的目的了~！</p>
+
+<p>但是可能会发现上面 getIPaddress() 方法中不是TP中获取IP的方法，TP中自带获取IP的方式是get_client_ip()，本来我也想用这个方法，但是发现在移动端的时候获取的ip是非常不准确的，会飘忽不定，于是另一种方式来获取ip</p>
+
+<figure class="highlight"><pre><code class="language-php" data-lang="php"><span class="k">function</span> <span class="nf">getIPaddress</span><span class="p">(){</span>
+    <span class="nv">$IPaddress</span><span class="o">=</span><span class="s1">''</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nb">isset</span><span class="p">(</span><span class="nv">$_SERVER</span><span class="p">)){</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nb">isset</span><span class="p">(</span><span class="nv">$_SERVER</span><span class="p">[</span><span class="s2">"HTTP_X_FORWARDED_FOR"</span><span class="p">])){</span>
+            <span class="nv">$IPaddress</span> <span class="o">=</span> <span class="nv">$_SERVER</span><span class="p">[</span><span class="s2">"HTTP_X_FORWARDED_FOR"</span><span class="p">];</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nb">isset</span><span class="p">(</span><span class="nv">$_SERVER</span><span class="p">[</span><span class="s2">"HTTP_CLIENT_IP"</span><span class="p">]))</span> <span class="p">{</span>
+            <span class="nv">$IPaddress</span> <span class="o">=</span> <span class="nv">$_SERVER</span><span class="p">[</span><span class="s2">"HTTP_CLIENT_IP"</span><span class="p">];</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="nv">$IPaddress</span> <span class="o">=</span> <span class="nv">$_SERVER</span><span class="p">[</span><span class="s2">"REMOTE_ADDR"</span><span class="p">];</span>
+        <span class="p">}</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nb">getenv</span><span class="p">(</span><span class="s2">"HTTP_X_FORWARDED_FOR"</span><span class="p">)){</span>
+            <span class="nv">$IPaddress</span> <span class="o">=</span> <span class="nb">getenv</span><span class="p">(</span><span class="s2">"HTTP_X_FORWARDED_FOR"</span><span class="p">);</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nb">getenv</span><span class="p">(</span><span class="s2">"HTTP_CLIENT_IP"</span><span class="p">))</span> <span class="p">{</span>
+            <span class="nv">$IPaddress</span> <span class="o">=</span> <span class="nb">getenv</span><span class="p">(</span><span class="s2">"HTTP_CLIENT_IP"</span><span class="p">);</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="nv">$IPaddress</span> <span class="o">=</span> <span class="nb">getenv</span><span class="p">(</span><span class="s2">"REMOTE_ADDR"</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="nv">$IPaddress</span><span class="p">;</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>移动端通过此方法获取的ip是相对比较准确的，可以进行正确的判断。</p>
+
+<p>通过以上的方法就可以实现对ip的限制，基本上没什么难度，非常简单。。。</p>
+:ET

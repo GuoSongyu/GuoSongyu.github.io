@@ -1,0 +1,2 @@
+I"�<p>写了一些简单的类库，写完之后想暂时推送的github仓库中，但是在git pull的时候，出现了如下提示，fatal: refusing to merge unrelated histories，要在后面增加一段命令之后才可以git pull成功：</p>
+:ET

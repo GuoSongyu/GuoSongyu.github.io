@@ -1,0 +1,53 @@
+I"3<p>开头好像也没有什么废话的，直接上5.6版本的上传代码：</p>
+
+<figure class="highlight"><pre><code class="language-php" data-lang="php"><span class="cd">/**
+	主要部分
+*/</span>
+
+<span class="nv">$url</span> <span class="o">=</span> <span class="s2">"https://api.weixin.qq.com/cgi-bin/media/upload?access_token=ACCESS_TOKEN"</span><span class="p">;</span>
+<span class="nv">$data</span><span class="p">[</span><span class="s1">'media'</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"@test.jpg"</span><span class="p">;</span>
+<span class="nv">$data</span><span class="p">[</span><span class="s1">'type'</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"image"</span><span class="p">;</span>
+
+<span class="nv">$res</span> <span class="o">=</span> <span class="nx">httpPost</span><span class="p">(</span><span class="nv">$url</span><span class="p">,</span><span class="nv">$data</span><span class="p">);</span></code></pre></figure>
+
+<p>附上httpPost方法代码，获取access_token的方法就不在此说明了，毕竟没有什么难度(:</p>
+
+<figure class="highlight"><pre><code class="language-php" data-lang="php"><span class="cd">/**
+* 通过curl post来获取信息
+* @param string $url 请求信息地址
+* @param arr $data 请求携带信息
+* return json
+*/</span>
+<span class="k">function</span> <span class="nf">httpPost</span><span class="p">(</span><span class="nv">$url</span><span class="p">,</span><span class="nv">$data</span><span class="p">){</span>
+	<span class="nv">$ch</span> <span class="o">=</span> <span class="nb">curl_init</span><span class="p">();</span>
+	<span class="nb">curl_setopt</span><span class="p">(</span><span class="nv">$ch</span><span class="p">,</span> <span class="nx">CURLOPT_URL</span><span class="p">,</span><span class="nv">$url</span><span class="p">);</span>
+	<span class="nb">curl_setopt</span><span class="p">(</span><span class="nv">$ch</span><span class="p">,</span> <span class="nx">CURLOPT_CUSTOMREQUEST</span><span class="p">,</span> <span class="s2">"POST"</span><span class="p">);</span>
+	<span class="nb">curl_setopt</span><span class="p">(</span><span class="nv">$ch</span><span class="p">,</span> <span class="nx">CURLOPT_SSL_VERIFYPEER</span><span class="p">,</span> <span class="k">FALSE</span><span class="p">);</span>
+	<span class="nb">curl_setopt</span><span class="p">(</span><span class="nv">$ch</span><span class="p">,</span> <span class="nx">CURLOPT_SSL_VERIFYHOST</span><span class="p">,</span> <span class="k">FALSE</span><span class="p">);</span>
+	<span class="nb">curl_setopt</span><span class="p">(</span><span class="nv">$ch</span><span class="p">,</span> <span class="nx">CURLOPT_USERAGENT</span><span class="p">,</span> <span class="s1">'Mozilla/5.0 (compatible; MSIE 5.01; Windows NT 5.0)'</span><span class="p">);</span>
+	<span class="nb">curl_setopt</span><span class="p">(</span><span class="nv">$ch</span><span class="p">,</span> <span class="nx">CURLOPT_FOLLOWLOCATION</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+	<span class="nb">curl_setopt</span><span class="p">(</span><span class="nv">$ch</span><span class="p">,</span> <span class="nx">CURLOPT_AUTOREFERER</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+	<span class="nb">curl_setopt</span><span class="p">(</span><span class="nv">$ch</span><span class="p">,</span> <span class="nx">CURLOPT_POSTFIELDS</span><span class="p">,</span> <span class="nv">$data</span><span class="p">);</span>
+
+	<span class="nb">curl_setopt</span><span class="p">(</span><span class="nv">$ch</span><span class="p">,</span> <span class="nx">CURLOPT_RETURNTRANSFER</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span>
+	<span class="nv">$tmpInfo</span> <span class="o">=</span> <span class="nb">curl_exec</span><span class="p">(</span><span class="nv">$ch</span><span class="p">);</span>
+	 
+	<span class="k">if</span> <span class="p">(</span><span class="nb">curl_errno</span><span class="p">(</span><span class="nv">$ch</span><span class="p">))</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="p">(</span><span class="s2">"curl_error: "</span><span class="o">.</span><span class="nb">curl_error</span><span class="p">(</span><span class="nv">$ch</span><span class="p">));</span>
+	<span class="p">}</span>
+	<span class="nb">curl_close</span><span class="p">(</span><span class="nv">$ch</span><span class="p">);</span>
+	<span class="k">return</span> <span class="nv">$tmpInfo</span><span class="p">;</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>之后换用了php7版本的开发环境，还是以上代码，但是发现出现media data missing hint的错误，找不到多媒体文件，文件也确实存在，于是想到可是php版本的问题，去查了一些资料，发现问题果然在这里，在5.6版本之后”@test.jpg”这种方法已经取消，变成了new \CURLFile($path),所以在5.6之后版本的上传文件代码修改为如下：</p>
+
+<figure class="highlight"><pre><code class="language-php" data-lang="php"><span class="nv">$url</span> <span class="o">=</span> <span class="s2">"https://api.weixin.qq.com/cgi-bin/media/upload?access_token=ACCESS_TOKEN"</span><span class="p">;</span>
+<span class="nv">$data</span><span class="p">[</span><span class="s1">'media'</span><span class="p">]</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">\CURLFile</span><span class="p">(</span><span class="s2">"test.jpg"</span><span class="p">);</span>
+<span class="nv">$data</span><span class="p">[</span><span class="s1">'type'</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"image"</span><span class="p">;</span>
+
+<span class="nv">$res</span> <span class="o">=</span> <span class="nx">httpPost</span><span class="p">(</span><span class="nv">$url</span><span class="p">,</span><span class="nv">$data</span><span class="p">);</span>
+
+<span class="cp">?&gt;</span></code></pre></figure>
+
+<p>其实就是不同版本中curl中的用法不同，发现之后在此记录下来，方便查阅</p>
+:ET

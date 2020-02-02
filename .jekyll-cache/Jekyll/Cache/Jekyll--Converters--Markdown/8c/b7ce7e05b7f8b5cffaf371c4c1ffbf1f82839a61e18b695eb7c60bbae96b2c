@@ -1,0 +1,11 @@
+I"<p>今天晚上在修改一个项目的时候，有一个需要录入个人信息的表单，有一个birthday的字段，设置的默认值为’0000-00-00’,之前使用的时候没有发现问题，但是今天使用的时候，程序一直报错（PS：今天还有一个特别愚蠢的地方是，在调试打印的时候，加入了”&lt;pre/&gt;“来使信息格式更加清晰，结果在浏览器networok中调试的时候，Preview一直为空白，不显示信息，最后还是在response中看到了错误信息，才发现是mysql错误）</p>
+
+<p>因为之前的mysql版本一直是5.6，这次使用的本地环境是mysql5.7版本，5.7版本默认的sql-model为以下内容：</p>
+
+<figure class="highlight"><pre><code class="language-mysql" data-lang="mysql">sql-mode = 
+"STRICT_ALL_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_ZERO_DATE,NO_ZERO_IN_DATE,NO_AUTO_CREATE_USER";</code></pre></figure>
+
+<p>其中 <strong>NO_ZERO_DATE</strong> <strong>NO_ZERO_IN_DATE</strong>两个选项禁止了0000这样的日期和时间,在sql-model中去掉这两个选项，再重启mysql，就可以设置date字段的默认值为’0000-00-00’了</p>
+
+<p>本来就是一个mysql版本的问题，由于开始错误日志没有显示，也没有看到，重复的找了很久，才把错误定位到插入语句中，然后才找到了错误的原因，导致浪费了很多时间；其实在一开始就应该想到，程序一直没有被修改，而又突然间报错，可能就是环境的问题。~~<del>(&gt;_&lt;)</del>~~</p>
+:ET

@@ -1,0 +1,67 @@
+I"e
+<p>最近在学习nginx，把一些东西记录下来，方便以后去查询，也顺便当作对自己得监督吧</p>
+
+<p>在centos上安装nginx其实没有想象得复杂</p>
+
+<h2 id="yum源安装">yum源安装</h2>
+
+<h3 id="一配置yum源">一、配置yum源</h3>
+
+<p>进入到nginx官网中，获取源配置内容，进入centos得yum源配置目录，新建文件/etc/yum.repos.d/nginx.repo,并将内容复制到文件中</p>
+
+<p><img src="/images/2020-02-02-1.jpg" alt="" /></p>
+
+<p><img src="/images/2020-02-02-2.jpg" alt="" /></p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>运行 yum list</td>
+      <td>grep nginx 命令可以查看刚才配置好的源</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><img src="/images/2020-02-02-3.jpg" alt="" /></p>
+
+<p>###二、安装nginx</p>
+
+<p>运行 yum install nginx 进行安装，等待安装完成后，执行nginx -V对nginx信息进行查看，证明nginx安装成功，可以进行使用了</p>
+
+<p><img src="/images/2020-02-02-4.jpg" alt="" /></p>
+
+<p>如果在启动过程中出现如下问题，可以进入到nginx.conf配置文件中，将此项注释打开，将目录修改到log下，重启即可</p>
+
+<figure class="highlight"><pre><code class="language-dos" data-lang="dos">遇到：nginx: [error] open() "/var/run/nginx.pid" failed (2: No such file or directory)</code></pre></figure>
+
+<p><img src="/images/2020-02-02-5.jpg" alt="" /></p>
+
+<h2 id="源码安装">源码安装</h2>
+
+<h3 id="一下载并解压">一、下载并解压</h3>
+
+<p>进入nginx官网，下载需要得版本（推荐稳定版）,下载后，将压缩包拷贝至/usr/local/src目录下，运行命令进行解压</p>
+
+<p><img src="/images/2020-02-02-6.jpg" alt="" /></p>
+
+<figure class="highlight"><pre><code class="language-dos" data-lang="dos">tar zxf nginx-1.16.1.tar.gz</code></pre></figure>
+
+<h3 id="二安装">二、安装</h3>
+
+<p>进入到nginx-1.16.1目录，对源码进行编译，可以在编译前，查看可编译模块</p>
+
+<figure class="highlight"><pre><code class="language-dos" data-lang="dos">#查看可编译模块
+./configure --help</code></pre></figure>
+
+<p>进行编译，并执行make命令安装，这里进行简单得命令，需要其他模块可按照说明进行增加</p>
+
+<figure class="highlight"><pre><code class="language-dos" data-lang="dos">./configure --prefix=/usr/local/nginx --conf-path=/etc/nginx/nginx.conf
+make &amp;&amp; make install</code></pre></figure>
+
+<p>安装完成后，进行启动</p>
+
+<figure class="highlight"><pre><code class="language-dos" data-lang="dos">#启动服务
+/usr/local/nginx/sbin/nginx
+#查看版本
+/usr/local/nginx/sbin/nginx -V</code></pre></figure>
+:ET

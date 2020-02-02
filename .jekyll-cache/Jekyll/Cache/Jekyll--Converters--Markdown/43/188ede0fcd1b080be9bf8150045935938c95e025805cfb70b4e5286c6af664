@@ -1,0 +1,30 @@
+I"1<p>在阅读一个tp5的cms系统中的时候，发现在生成多模板选择列表的时候，用了一个非常好的想法（我觉得我是想不到），在每个主题中都存在一个info.php的文件和一个对应主题的logo</p>
+
+<p>这样在查询列表显示的时候，直接用php去获取视图的目录，然后再依次获取目录中每一个文件中的info.php和logo文件，生成一个新的数组渲染到前段页面中显示，这之中用到的的主要函数就是opendir() 、 readdir() 和 include 这三个函数</p>
+
+<h2 id="opendir"><a href="#header-2"></a><a href="http://php.net/manual/zh/function.opendir.php">opendir()</a></h2>
+
+<p>根据路径获取文件目录，如果存在则返回目录的资源句柄，类似 resource(55,stream)这种</p>
+
+<h2 id="readdir"><a href="#header-2"></a><a href="http://php.net/manual/zh/function.readdir.php">readdir()</a></h2>
+
+<p>返回目录中下一个文件的文件名。文件名以在文件系统中的排序返回，<em>但是</em> 在使用的过程发现，除了会返回目录中可以看到的文件之外，在前面还会有两个多余的”.”和”..”，查找了一些资料发现这两个是系统赋予每个目录的，每个目录被创建之后都会存在，所以在使用的时候要将这两个从结果中去掉</p>
+
+<figure class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="nv">$dir</span> <span class="o">=</span> <span class="s2">"/images/"</span><span class="p">;</span>
+
+<span class="c1">// 打开目录，然后读取其内容</span>
+<span class="k">if</span> <span class="p">(</span><span class="nb">is_dir</span><span class="p">(</span><span class="nv">$dir</span><span class="p">)){</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nv">$dh</span> <span class="o">=</span> <span class="nb">opendir</span><span class="p">(</span><span class="nv">$dir</span><span class="p">)){</span>
+    <span class="k">while</span> <span class="p">(</span><span class="kc">false</span> <span class="o">!==</span> <span class="p">(</span><span class="nv">$file</span> <span class="o">=</span> <span class="nb">readdir</span><span class="p">(</span><span class="nv">$handle</span><span class="p">)))</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nv">$file</span> <span class="o">!=</span> <span class="s2">"."</span> <span class="o">&amp;&amp;</span> <span class="nv">$file</span> <span class="o">!=</span> <span class="s2">".."</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">echo</span> <span class="s2">"filename:"</span><span class="o">.</span><span class="nv">$file</span><span class="o">.</span><span class="s2">"&lt;br/&gt;"</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="nb">closedir</span><span class="p">(</span><span class="nv">$dh</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="cp">?&gt;</span></code></pre></figure>
+
+:ET

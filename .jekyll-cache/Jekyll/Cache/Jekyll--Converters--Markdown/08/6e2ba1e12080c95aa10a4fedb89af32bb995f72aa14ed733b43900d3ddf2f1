@@ -1,0 +1,43 @@
+I"�<p>在yii2中，验证码使用的方法也比较灵活和方便，甚至可以自定义验证码的模板~</p>
+
+<p>在yii2的demo中，给出的验证码使用方式是这样的：<br />
+<img src="/images/2019-01-07-1.jpg" alt="" /></p>
+
+<p>是在yii提供的表单组件中使用的，这样使用验证码的话，就得先使用表单组件才行，可能相对来说会麻烦一些，所以，就简单得说下验证码得单独使用方法</p>
+
+<p>在yii2中得核心类中发现yii\captcha\Captcha这个类，就是生成验证码得类，从注释中可以看出，这个类可以生成验证码图片和输入验证码得input元素<br />
+<img src="/images/2019-01-07-2.jpg" alt="" /></p>
+
+<p>类中得几个属性，其中我认为这两个属性相对常用和重要一些<br />
+<img src="/images/2019-01-07-3.jpg" alt="" /></p>
+
+<p>其中 $captchaAction 这个属性，是图片生成得请求路径，通过这个路径来生成图片；而$template这个属性是生成验证码和输入框得模板，默认就是这样，如果要自己更改得话，可以像demo中那样，增加一些html代码，在生成时会自动将{image}和{input}替换成图片和输入框</p>
+
+<figure class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"row"</span><span class="nt">&gt;&lt;div</span> <span class="na">class=</span><span class="s">"col-lg-3"</span><span class="nt">&gt;</span>{image}<span class="nt">&lt;/div&gt;&lt;div</span> <span class="na">class=</span><span class="s">"col-lg-6"</span><span class="nt">&gt;</span>{input}<span class="nt">&lt;/div&gt;&lt;/div&gt;</span></code></pre></figure>
+
+<p>在生成图片时，会像路径进行请求，在demo中，是直接引用yii\captcha\CaptchaAction类来生成图片（其实大部分情况，我们直接引用就可以满足大多数得需求了）<br />
+<img src="/images/2019-01-07-4.jpg" alt="" /></p>
+
+<p>那么问题来了，比如需要自定验证码得长度，或者图片得尺寸，或者其他得一些参数，我要怎么处理呢？</p>
+
+<p>通过观察yii\captcha\CaptchaAction类中得内容，发现其中有大量得公共属性，来作为参数使用<br />
+<img src="/images/2019-01-07-5.jpg" alt="" /><br />
+<img src="/images/2019-01-07-6.jpg" alt="" /></p>
+
+<p>比如，图片得宽和高，验证码得最小长度和最大长度，背景色，字体等，还有一个是yii中很有特点得参数$fixedVerifyCode（原谅我没有截出来，笔记本屏幕太小了┭┮﹏┭┮），这个参数给出得用法是，如果指定这个值那么验证码就会一直为指定得值，建议在测试中使用此参数，来提高测试效率，是不是考虑得十分周到呢！哈哈</p>
+
+<p>知道这些配置参数之后，就可以在控制器得actions中直接进行配置了<br />
+<img src="/images/2019-01-07-7.jpg" alt="" /></p>
+
+<p>在页面中，只需要进行如下配置就可以使用</p>
+
+<figure class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?=</span> <span class="nx">Captcha</span><span class="o">::</span><span class="na">widget</span><span class="p">([</span>
+    <span class="s1">'name'</span> <span class="o">=&gt;</span> <span class="s1">'ContactForm[verifyCode]'</span><span class="p">,</span>
+    <span class="s1">'template'</span> <span class="o">=&gt;</span> <span class="s1">'&lt;div class="row"&gt;&lt;div class="col-lg-3"&gt;{image}&lt;/div&gt;&lt;div class="col-lg-6"&gt;{input}&lt;/div&gt;&lt;/div&gt;'</span><span class="p">,</span>
+<span class="p">])</span> <span class="cp">?&gt;</span></code></pre></figure>
+
+<p>有了生成验证码，就一定会有验证，验证则更加简单，只需要在model得验证码rules中进行如下配置，在进行模型验证时就会自动对验证码进行验证！（给自己留个坑，关于模型得验证等就再下一篇文章来进行介绍吧）<br />
+<img src="/images/2019-01-07-8.jpg" alt="" /></p>
+
+<p>yii中得验证码就是这样了，可控得参数完全能够满足项目得大部分需求，虽然不知道你们是怎么看得。。。反正。我是觉得非常方便( •̀ ω •́ )y</p>
+:ET

@@ -1,0 +1,27 @@
+I",<div class="page-content wc-container">
+	<div class="post">
+		<h1>标签列表</h1>  
+		<ul class="tags">
+			
+			<li><a href="/tag/web">web</a></li>
+			
+			<li><a href="/tag/jekyll">jekyll</a></li>
+			
+			<li><a href="/tag/github">github</a></li>
+			
+			<li><a href="/tag/杂谈">杂谈</a></li>
+			
+			<li><a href="/tag/php">php</a></li>
+			
+			<li><a href="/tag/心情">心情</a></li>
+			
+			<li><a href="/tag/yii2">yii2</a></li>
+			
+			<li><a href="/tag/docker">docker</a></li>
+			
+			<li><a href="/tag/nginx">nginx</a></li>
+			
+		</ul>
+	</div>
+</div>
+:ET
