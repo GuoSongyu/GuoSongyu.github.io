@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "springmvc整合spring security(1)启用配置文件登录验证"
+title: "springmvc整合spring security启用配置文件登录验证"
 date: 2020-11-18 19:52:31 +0800
 tags: 
 description: 
