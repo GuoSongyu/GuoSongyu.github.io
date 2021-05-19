@@ -100,6 +100,7 @@ public class LogAspect {
 	        systemLogDTO.setErrorDetail(JsonUtil.toJSONString(errorDetail));
 	    }
 
+	    //此位置可以根据需求保存到数据库或文件中
 	    saveLog(systemLogDTO);
 	}
 }
@@ -151,6 +152,36 @@ public class SystemLogDTO {
 @AfterThrowing：切点抛出异常时执行
 
 这里我使用了**@AfterReturn**和**@AfterThrowing**，为了区分记录正常返回和异常返回的日志。
+
+## 设置切面启动开关
+
+按照上述操作，设置好了定义好了切面类之后，还需要在入口或配置文件中进行设置开启。
+
+#### spring boot
+在入口文件中增加@EnableAspectJAutoProxy(proxyTargetClass = true)注解
+{% highlight java %}
+@SpringBootApplication(exclude = {SecurityAutoConfiguration.class,org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration.class})
+@EnableAspectJAutoProxy(proxyTargetClass = true)
+public class Application {
+
+    public static void main(String[] args) {
+
+        SpringApplication.run(Application.class, args);
+    }
+}
+{% endhighlight %}
+
+#### spring mvc
+springmvc需要在spring-mvc文件中增加配置进行开启
+{% highlight xml %}
+<aop:aspectj-autoproxy proxy-target-class="true"/>
+{% endhighlight %}
+
+记得在命名空间中，加入对应的地址
+{% highlight xml %}
+http://www.springframework.org/schema/aop
+http://www.springframework.org/schema/aop/spring-aop.xsd
+{% endhighlight %}
 
 ## 小结
 
