@@ -20,7 +20,7 @@ docker pull centos:7
 docker run --name centos-test -itd -p 5001:22 --privileged centos:7 init
 {% endhighlight dos %}
 
-为了每次开机不用启动容器，可以增加 **--restart=always** 参数，每次docker启动时，该容器也会一起启动
+为了每次开机不用启动容器，可以增加 --restart=always 参数，每次docker启动时，该容器也会一起启动
 
 ### 设置root密码
 密码随意设置就好，为了使用xshell进行访问
